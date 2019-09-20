@@ -1,4 +1,4 @@
-package com.webcode.kc.salvo;
+package com.webcode.kc.salvo.model;
 
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
@@ -15,24 +15,23 @@ public class GamePlayer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    private long id;
 
-    private Date joinDate;
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="player")
+    private Date creationDate;
+
+    @ManyToOne
+    @JoinColumn(name="player_id")
     private Player player;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name="game_id")
     private Game game;
 
     public GamePlayer() { }
 
-    public GamePlayer(long id, Date joinDate, Player player, Game game) {
-        this.id = id;
-        this.joinDate = joinDate;
+    public GamePlayer(Date creationDate, Player player, Game game) {
+        this.creationDate = creationDate;
         this.player = player;
         this.game = game;
     }
@@ -45,12 +44,12 @@ public class GamePlayer {
         this.id = id;
     }
 
-    public Date getJoinDate() {
-        return joinDate;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    public void setJoinDate(Date joinDate) {
-        this.joinDate = joinDate;
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public Player getPlayer() {
@@ -69,12 +68,14 @@ public class GamePlayer {
         this.game = game;
     }
 
+    //toString Method
+    @Override
     public String toString() {
-        return
-                id + " " +
-                joinDate + " " +
-                player + " " +
-                game;
+        return "GamePlayer{" +
+                "id=" + id +
+                ", creationDate=" + creationDate +
+                ", player=" + player +
+                ", game=" + game +
+                '}';
     }
-
 }
