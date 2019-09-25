@@ -1,10 +1,8 @@
 package com.webcode.kc.salvo.model;
 
 import org.hibernate.annotations.GenericGenerator;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 
 //Creacion clase Player
 @Entity
@@ -20,14 +18,13 @@ public class Player {
 
     public Player() { }
 
-    public Player(long id, String firstName, String lastName, String userName) {
-        this.id = id;
+    public Player(String firstName, String lastName, String userName) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
     }
 
-    public Long getid() {
+    public Long getId() {
         return id;
     }
 
@@ -68,4 +65,5 @@ public class Player {
                 ", userName='" + userName + '\'' +
                 '}';
     }
+
 }
