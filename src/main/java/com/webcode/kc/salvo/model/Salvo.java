@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-public class Ship {
-
+public class Salvo {
 
 
     @Id
@@ -20,7 +19,8 @@ public class Ship {
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
 
-    private String type;
+    private Integer turn;
+
 
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -33,25 +33,25 @@ public class Ship {
 
 
     //CONSTRUCTORES
-    public Ship() {
+    public Salvo() {
     }
 
-    public Ship(String type, List<String> locations) {
-        this.type = type;
+    public Salvo(Integer turn, List<String> locations) {
+        this.turn = turn;
         this.locations = locations;
     }
 
     //GETTERS Y SETTERS
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public String getType() {
-        return this.type;
+    public Integer getTurn() {
+        return this.turn;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTurn(Integer turn) {
+        this.turn = turn;
     }
 
     public List<String> getLocations() {
@@ -70,10 +70,12 @@ public class Ship {
         this.gamePlayer = gamePlayer;
     }
 
-
-    public Map<String, Object> shipDTO() {
+    //DTO (data transfer object) para administrar la info de Salvo
+    public Map<String, Object> salvoDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("type", this.getType());
+        dto.put("player", this.getGamePlayer().getPlayer().getId());
+        dto.put("turn", this.getTurn());
+
         dto.put("locations", this.getLocations());
         return dto;
     }

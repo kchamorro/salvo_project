@@ -1,14 +1,10 @@
 package com.webcode.kc.salvo.model;
 
 import org.hibernate.annotations.GenericGenerator;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import java.util.Date;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
 public class GamePlayer {
@@ -16,9 +12,9 @@ public class GamePlayer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    private Long id;
+    private long id;
 
-    private Date creationDate;
+    private LocalDateTime joinDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="player_id")
@@ -29,13 +25,25 @@ public class GamePlayer {
     @JoinColumn(name="game_id")
     private Game game;
 
-    public GamePlayer() { }
 
-    public GamePlayer(Date creationDate, Player player, Game game) {
-        this.creationDate = creationDate;
-        this.player = player;
-        this.game = game;
+    @OneToMany(mappedBy = "gamePlayer", cascade = CascadeType.ALL)
+    private List<Ship> ships = new ArrayList<>();
+
+    @OneToMany(mappedBy = "gamePlayer", cascade = CascadeType.ALL)
+    private List<Salvo> salvoes = new ArrayList<Salvo>();
+
+
+    //CONSTRUCTORES
+    public GamePlayer() {
     }
+
+    public GamePlayer(Game game, Player player, LocalDateTime joinDate) {
+        this.game = game;
+        this.player = player;
+        this.joinDate = joinDate;
+    }
+
+    //GETTERS Y SETTERS
 
     public Long getId() {
         return id;
@@ -45,12 +53,12 @@ public class GamePlayer {
         this.id = id;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
+    public LocalDateTime getJoinDate() {
+        return joinDate;
     }
 
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    public void setJoinDate(LocalDateTime joinDate) {
+        this.joinDate = joinDate;
     }
 
     public Player getPlayer() {
@@ -69,14 +77,45 @@ public class GamePlayer {
         this.game = game;
     }
 
-    //toString Method
-    @Override
-    public String toString() {
-        return "GamePlayer{" +
-                "id=" + id +
-                ", creationDate=" + creationDate +
-                ", player=" + player +
-                ", game=" + game +
-                '}';
+
+    public void addShip(Ship ship) {
+        this.ships.add(ship);
+        ship.setGamePlayer(this);
+    }
+
+    public List<Ship> getShips() {
+        return this.ships;
+    }
+
+    public void addSalvo(Salvo salvo) {
+        this.salvoes.add(salvo);
+        salvo.setGamePlayer(this);
+    }
+
+    public List<Salvo> getSalvoes() {
+        return this.salvoes;
+    }
+
+
+
+    public Map<String, Object> gamePlayerDTO() {
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id", this.getId());
+        dto.put("player", this.getPlayer().playerDTO());
+
+        Score score = this.getPlayer().getScoreByGame(this.getGame());
+        if (score != null)
+            dto.put("score", score.getPoints());
+        else
+            dto.put("score", null);
+
+        return dto;
+    }
+
+
+    public Map<String, Object> gamePlayerUserNameDTO() {
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("player", this.getPlayer().getUserName());
+        return dto;
     }
 }
