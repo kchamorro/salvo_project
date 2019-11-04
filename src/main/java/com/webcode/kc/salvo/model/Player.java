@@ -151,9 +151,7 @@ public class Player {
 
 
     public void addGamePlayer(GamePlayer gamePlayer) {
-        //se agrega el gamePlayer que ingresa como parámetro al set declarado en los atributos
         this.gamePlayers.add(gamePlayer);
-        //al gamePlayer ingresado se le agrega este player mediante su setter en la clase GamePlayer
         gamePlayer.setPlayer(this);
     }
 

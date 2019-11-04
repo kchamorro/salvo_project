@@ -79,7 +79,6 @@ public class Score {
 
     public Map<String, Object> scoreDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
-
         dto.put("points", this.getPoints());
         return dto;
     }
