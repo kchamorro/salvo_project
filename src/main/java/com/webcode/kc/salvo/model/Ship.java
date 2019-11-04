@@ -23,11 +23,10 @@ public class Ship {
     private String type;
 
     @ElementCollection
-    @LazyCollection(LazyCollectionOption.FALSE)
     private List<String> locations = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "gamePlayer_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="gamePlayer_id")
     private GamePlayer gamePlayer;
 
 

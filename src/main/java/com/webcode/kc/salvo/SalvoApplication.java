@@ -82,6 +82,26 @@ public class SalvoApplication {
 			gp6.addShip(new Ship("Patrol Boat", Arrays.asList("G6", "H6")));
 
 
+			// save a salvoes
+			gp1.addSalvo(new Salvo(1, Arrays.asList("B5", "C5", "F1")));
+			gp1.addSalvo(new Salvo(2, Arrays.asList("F2", "D5")));
+
+			gp2.addSalvo(new Salvo(1, Arrays.asList("B4", "B5", "B6")));
+			gp2.addSalvo(new Salvo(2, Arrays.asList("E1", "H3", "A2")));
+
+			gp3.addSalvo(new Salvo(1, Arrays.asList("A2", "A4", "G6")));
+			gp3.addSalvo(new Salvo(2, Arrays.asList("A3", "H6")));
+
+			gp4.addSalvo(new Salvo(1, Arrays.asList("B5", "D5", "C7")));
+			gp4.addSalvo(new Salvo(2, Arrays.asList("C5", "C6")));
+
+			gp5.addSalvo(new Salvo(1, Arrays.asList("G6", "H6", "A4")));
+			gp5.addSalvo(new Salvo(2, Arrays.asList("A2", "A3", "D8")));
+
+			gp6.addSalvo(new Salvo(1, Arrays.asList("H1", "H2", "H3")));
+			gp6.addSalvo(new Salvo(2, Arrays.asList("E1", "F2", "G3")));
+
+
 			// save a gamePlayerRepository
 			gamePlayerRepository.save(gp1);
 			gamePlayerRepository.save(gp2);

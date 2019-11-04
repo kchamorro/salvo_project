@@ -23,10 +23,9 @@ public class Salvo {
 
 
     @ElementCollection
-    @LazyCollection(LazyCollectionOption.FALSE)
     private List<String> locations = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "gamePlayer_id")
     private GamePlayer gamePlayer;
 

@@ -26,11 +26,11 @@ public class GamePlayer {
     private Game game;
 
 
-    @OneToMany(mappedBy = "gamePlayer", cascade = CascadeType.ALL)
-    private List<Ship> ships = new ArrayList<>();
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
+    private Set<Ship> ships = new HashSet<>();
 
-    @OneToMany(mappedBy = "gamePlayer", cascade = CascadeType.ALL)
-    private List<Salvo> salvoes = new ArrayList<Salvo>();
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
+    private Set<Salvo> salvoes = new HashSet<>();
 
 
     //CONSTRUCTORES
@@ -78,21 +78,21 @@ public class GamePlayer {
     }
 
 
-    public void addShip(Ship ship) {
+    public void addShip(Ship ship){
         this.ships.add(ship);
         ship.setGamePlayer(this);
     }
 
-    public List<Ship> getShips() {
+    public Set<Ship> getShips(){
         return this.ships;
     }
 
-    public void addSalvo(Salvo salvo) {
+    public void addSalvo(Salvo salvo){
         this.salvoes.add(salvo);
         salvo.setGamePlayer(this);
     }
 
-    public List<Salvo> getSalvoes() {
+    public Set<Salvo> getSalvoes(){
         return this.salvoes;
     }
 
