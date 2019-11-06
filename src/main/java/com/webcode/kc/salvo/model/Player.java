@@ -28,7 +28,7 @@ public class Player {
     private String userName;
 
 
-    private int password;
+    private String password;
 
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
@@ -47,10 +47,9 @@ public class Player {
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = 0;
     }
 
-    public Player(String userName, String firstName, String lastName, int password) {
+    public Player(String userName, String firstName, String lastName, String password) {
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -92,11 +91,11 @@ public class Player {
         this.userName = userName;
     }
 
-    public int getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(int password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
