@@ -92,12 +92,6 @@ public class Player {
         this.userName = userName;
     }
 
-
-    public Set<GamePlayer> getGamePlayers() {
-        return this.gamePlayers;
-    }
-
-
     public int getPassword() {
         return password;
     }
@@ -106,9 +100,8 @@ public class Player {
         this.password = password;
     }
 
-
-    public void setLastLogin(Date date) {
-
+    public Set<GamePlayer> getGamePlayers() {
+        return this.gamePlayers;
     }
 
     public Set<Score> getScores() {
@@ -149,13 +142,12 @@ public class Player {
         return this.getWonScores().size() * 3 + getTiesScores().size();
     }
 
-
     public void addGamePlayer(GamePlayer gamePlayer) {
         this.gamePlayers.add(gamePlayer);
         gamePlayer.setPlayer(this);
     }
 
-    //método que retorna todos los games relacionados con el player a partir de los gamePlayers
+
     @JsonIgnore
     public List<Game> getGames() {
         return this.gamePlayers.stream().map(gp -> gp.getGame()).collect(Collectors.toList());

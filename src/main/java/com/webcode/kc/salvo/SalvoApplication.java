@@ -35,6 +35,7 @@ public class SalvoApplication {
 			, GameRepository gameRepository
 			, GamePlayerRepository gamePlayerRepository
 			, ScoreRepository scoreRepository
+
 	) {
 		return (args) -> {
 
@@ -64,7 +65,6 @@ public class SalvoApplication {
 			// save a Ships
 			gp1.addShip(new Ship("Destroyer", Arrays.asList("H2", "H3", "H4")));
 			gp1.addShip(new Ship("Submarine", Arrays.asList("E1", "F1", "G1")));
-			gp1.addShip(new Ship("Patrol Boat", Arrays.asList("B4", "B5")));
 
 			gp2.addShip(new Ship("Destoyer", Arrays.asList("B5", "C5", "D5")));
 			gp2.addShip(new Ship("Patrol Boat", Arrays.asList("F1", "F2")));

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 @RestController
 
-public class SalvoRestController {
+public class SalvoController {
 
 
     @Autowired
@@ -61,4 +61,8 @@ public class SalvoRestController {
         return dto;
 
     }
+
+
+
+
 }
