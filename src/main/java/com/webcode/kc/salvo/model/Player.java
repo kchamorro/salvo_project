@@ -27,8 +27,8 @@ public class Player {
     @Column(unique = true)
     private String userName;
 
-
     private String password;
+    private boolean admin;
 
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
@@ -54,8 +54,16 @@ public class Player {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
+        this.admin = false;
     }
 
+    public Player(String userName, String firstName, String lastName,String password, boolean isAdmin) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.admin = isAdmin;
+    }
 
     //GET Y SET
 
@@ -97,6 +105,14 @@ public class Player {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isAdmin(){
+        return this.admin;
+    }
+
+    public void setAdmin(boolean isAdmin){
+        this.admin = isAdmin;
     }
 
     public Set<GamePlayer> getGamePlayers() {
