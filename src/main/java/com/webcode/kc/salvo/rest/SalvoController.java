@@ -20,11 +20,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-@RequestMapping("/api")
 @RestController
-
+@RequestMapping("/api")
 public class SalvoController {
-
 
     @Autowired
     private GameRepository gameRepository;
@@ -37,6 +35,7 @@ public class SalvoController {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
 
     @RequestMapping("/games")
     public Map<String, Object> getGames(Authentication authentication){
@@ -51,8 +50,22 @@ public class SalvoController {
     }
 
     @RequestMapping("/game_view/{gamePlayerId}")
-    public Map<String,Object> getGameView(@PathVariable long gamePlayerId){
-        return this.gameViewDTO(gamePlayerRepository.findById(gamePlayerId).orElse(null));
+    public ResponseEntity<Map<String,Object>> getGameView(@PathVariable long gamePlayerId, Authentication authentication){
+        ResponseEntity<Map<String, Object>> response;
+        if(isGuest(authentication)){
+            response = new ResponseEntity<>(makeMap("error", "You must be logged in first"), HttpStatus.UNAUTHORIZED);
+        }else{
+            GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
+            Player player = playerRepository.findPlayerByUserName(authentication.getName());
+            if(gamePlayer == null){
+                response = new ResponseEntity<>(makeMap("error", "No such game"), HttpStatus.NOT_FOUND);
+            }else if(gamePlayer.getPlayer().getId() != player.getId()){
+                response = new ResponseEntity<>(makeMap("error", "This is not your game"), HttpStatus.UNAUTHORIZED);
+            } else {
+                response = new ResponseEntity<>(this.gameViewDTO(gamePlayer), HttpStatus.OK);
+            }
+        }
+        return response;
     }
 
     private Map<String,Object> gameViewDTO(GamePlayer gamePlayer){
@@ -72,15 +85,15 @@ public class SalvoController {
         }
 
         return dto;
-    }
 
+    }
 
     @RequestMapping(path = "/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createUser(@RequestParam String username, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String password) {
         ResponseEntity<Map<String, Object>> response;
         Player player = playerRepository.findPlayerByUserName(username);
         if (username.isEmpty() || password.isEmpty()) {
-            response = new ResponseEntity<>(makeMap("error", "No name or password"), HttpStatus.FORBIDDEN);
+            response = new ResponseEntity<>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
         } else if (player != null) {
             response = new ResponseEntity<>(makeMap("error", "Username already exists"), HttpStatus.FORBIDDEN);
         } else {

@@ -14,8 +14,8 @@
         <template v-if="player == 'guest'">
             <h1 >Please Login</h1>
             <form v-on:submit.prevent="login($event)" id="login" >
-                <input type="text" name="username">
-                <input type="text" name="password">
+                Username <input type="text" name="username">
+                Password<input type="text" name="password">
                 <button type="submit">log in</button>
             </form>
         </template>
