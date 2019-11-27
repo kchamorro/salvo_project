@@ -28,8 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/api/login");
 
 
-        http.logout().logoutUrl("/api/logout");
-
+        // turn off checking for CSRF tokens
         http.csrf().disable();
 
         // if user is not authenticated, just send an authentication failure response
@@ -43,15 +42,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // if logout is successful, just send a success response
         http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
-
-
-
     }
+
     private void clearAuthenticationAttributes(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
         }
-    }
 
+    }
 }

@@ -176,6 +176,32 @@ function sendShips(ships,gamePlayerId){
 
 }
 
+function shoot(shots,gamePlayerId){
+	let url = '/api/games/players/'+gamePlayerId+'/salvoes'
+	let init = {
+		method: 'POST',
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify(shots)
+	}
+	fetch(url,init)
+	.then(res => {
+		if(res.ok){
+			return res.json()
+		}else{
+			return Promise.reject(res.json())
+		}
+	})
+	.then(json => {
+
+		getGameData(gp)
+	})
+	.catch(error => error)
+	.then(error => console.log(error))
+
+}
+
 
 
 function gridView(ev){

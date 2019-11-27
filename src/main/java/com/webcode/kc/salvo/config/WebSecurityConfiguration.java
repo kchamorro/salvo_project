@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+
     @Autowired
     PlayerRepository playerRepository;
 
@@ -42,5 +43,4 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
             }
         }).passwordEncoder(passwordEncoder());
     }
-
 }
