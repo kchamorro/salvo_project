@@ -1,9 +1,6 @@
 package com.webcode.kc.salvo.rest;
 
-import com.webcode.kc.salvo.model.Game;
-import com.webcode.kc.salvo.model.GamePlayer;
-import com.webcode.kc.salvo.model.Player;
-import com.webcode.kc.salvo.model.Ship;
+import com.webcode.kc.salvo.model.*;
 import com.webcode.kc.salvo.repository.GamePlayerRepository;
 import com.webcode.kc.salvo.repository.GameRepository;
 import com.webcode.kc.salvo.repository.PlayerRepository;
