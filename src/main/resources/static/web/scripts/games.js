@@ -1,7 +1,7 @@
 
 function getGames(){
 
-	
+
 	fetch("/api/games")
 		.then(res => res.json())
 		.then(json => {
@@ -25,15 +25,15 @@ var app = new Vue({
 		    return new Date(dateString).toLocaleString();
 		},
 		login(evt) {
-		   evt.preventDefault(); 
+		   evt.preventDefault();
 
 		   let formData = new FormData(evt.target)
-		   
+
 
 		   fetch('/api/login',{
 				method: 'POST',
 				body: formData,
-		  		
+
 			})
 			.then((res)=> res)
 			.then(json =>{
@@ -58,7 +58,7 @@ var app = new Vue({
 				}
 			})
 			.then(json => {
-	
+
 				location.href = '/web/game.html?gp=' + json.gpId
 			})
 			.catch(error => error)
@@ -84,12 +84,3 @@ var app = new Vue({
 		}
     }
 });
-
-
-
-
-
-
-
-
-
