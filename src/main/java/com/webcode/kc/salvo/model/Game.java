@@ -42,7 +42,6 @@ public class Game {
     }
 
 
-
     //GETTERS Y SETTERS
     public long getId() {
         return id;
@@ -64,7 +63,7 @@ public class Game {
         return gamePlayers;
     }
 
-
+    // Establecer relación entre game y gamePlayer
     public void addGamePlayer(GamePlayer gamePlayer) {
         this.gamePlayers.add(gamePlayer);
         gamePlayer.setGame(this);
@@ -79,7 +78,7 @@ public class Game {
         score.setGame(this);
     }
 
-
+    //Retormar los players
     public List<Player> getPlayers() {
         return this.gamePlayers.stream().map(gp -> gp.getPlayer()).collect(Collectors.toList());
     }

@@ -1,11 +1,12 @@
 package com.webcode.kc.salvo.model;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
+
 
 @Entity
 public class Score {
@@ -20,17 +21,16 @@ public class Score {
     private int points;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "player_id")
+    @JoinColumn(name="player_id")
     private Player player;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "game_id")
+    @JoinColumn(name="game_id")
     private Game game;
 
-    public Score() {
-    }
+    public Score() { }
 
-    public Score(int points, Game game, Player player, LocalDateTime finishDate) {
+    public Score(int points, Game game,Player player,LocalDateTime finishDate) {
         this.points = points;
         this.game = game;
         this.player = player;
@@ -45,11 +45,11 @@ public class Score {
         this.id = id;
     }
 
-    public int getPoints() {
+    public int getPoints(){
         return this.points;
     }
 
-    public void setPoints(int points) {
+    public void setPoints(int points){
         this.points = points;
     }
 
@@ -75,11 +75,5 @@ public class Score {
 
     public void setGame(Game game) {
         this.game = game;
-    }
-
-    public Map<String, Object> scoreDTO() {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("points", this.getPoints());
-        return dto;
     }
 }

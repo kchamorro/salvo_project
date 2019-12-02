@@ -1,55 +1,49 @@
 package com.webcode.kc.salvo.model;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
 import javax.persistence.*;
-import java.util.ArrayList;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import org.hibernate.annotations.GenericGenerator;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class Salvo {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    private Long id;
+    private long id;
 
-    private Integer turn;
-
+    private int turn;
 
     @ElementCollection
     private List<String> locations = new ArrayList<>();
 
-    @ManyToOne (fetch = FetchType.EAGER)
-    @JoinColumn(name = "gamePlayer_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="gamePlayer_id")
     private GamePlayer gamePlayer;
 
 
+    public Salvo() { }
 
-    //CONSTRUCTORES
-    public Salvo() {
-    }
-
-    public Salvo(Integer turn, List<String> locations) {
+    public Salvo(int turn, List<String> locations) {
         this.turn = turn;
         this.locations = locations;
     }
 
-    //GETTERS Y SETTERS
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
-    public Integer getTurn() {
+    public int getTurn() {
         return this.turn;
     }
 
-    public void setTurn(Integer turn) {
+    public void setTurn(int turn) {
         this.turn = turn;
     }
 
@@ -61,20 +55,65 @@ public class Salvo {
         this.locations = locations;
     }
 
-    public GamePlayer getGamePlayer() {
+    public GamePlayer getGamePlayer(){
         return this.gamePlayer;
     }
 
-    public void setGamePlayer(GamePlayer gamePlayer) {
+    public void setGamePlayer(GamePlayer gamePlayer){
         this.gamePlayer = gamePlayer;
     }
 
-    //DTO (data transfer object) para administrar la info de Salvo
-    public Map<String, Object> salvoDTO() {
+    public List<String> getHits(List<String> myShots, Set<Ship> opponentShips){
+
+        List<String> allEnemyLocs = new ArrayList<>();
+
+        opponentShips.forEach(ship -> allEnemyLocs.addAll(ship.getLocations()));
+
+        return myShots
+                .stream()
+                .filter(shot -> allEnemyLocs
+                        .stream()
+                        .anyMatch(loc -> loc.equals(shot)))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<Ship> getSunkenShips(Set<Salvo> mySalvoes, Set<Ship> opponentShips){
+
+        List<String> allShots = new ArrayList<>();
+
+        mySalvoes.forEach(salvo -> allShots.addAll(salvo.getLocations()));
+
+        return opponentShips
+                .stream()
+                .filter(ship -> allShots.containsAll(ship.getLocations()))
+                .collect(Collectors.toList());
+    }
+
+
+    public Map<String, Object> salvoDTO(){
         Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("player", this.getGamePlayer().getPlayer().getId());
         dto.put("turn", this.getTurn());
+        dto.put("player", this.getGamePlayer().getPlayer().getId());
         dto.put("locations", this.getLocations());
+
+        GamePlayer opponent = this.getGamePlayer().getOpponent();
+
+        if(opponent != null){
+
+            Set<Ship> enemyShips = opponent.getShips();
+
+            dto.put("hits", this.getHits(this.getLocations(),enemyShips));
+
+            Set<Salvo> mySalvoes = this.getGamePlayer()
+                    .getSalvoes()
+                    .stream()
+                    .filter(salvo -> salvo.getTurn() <= this.getTurn())
+                    .collect(Collectors.toSet());
+
+            dto.put("sunken", this.getSunkenShips(mySalvoes, enemyShips).stream().map(Ship::shipDTO));
+        }
+
         return dto;
     }
 }

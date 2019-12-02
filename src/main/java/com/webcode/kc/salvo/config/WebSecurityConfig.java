@@ -14,19 +14,19 @@ import javax.servlet.http.HttpSession;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http.authorizeRequests()
                 .antMatchers("/rest/**").hasAuthority("ADMIN")
                 .antMatchers("/api/game_view/**").hasAnyAuthority("ADMIN","USER")
                 .antMatchers("/api/games").permitAll()
                 .antMatchers("/api/leaderboard").permitAll();
-                //.antMatchers("/web/games.html").hasAnyAuthority("ADMIN","USER");
+        //.antMatchers("/web/games.html").hasAnyAuthority("ADMIN","USER");
 
         http.formLogin()
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .loginPage("/api/login");
 
+        http.logout().logoutUrl("/api/logout");
 
         // turn off checking for CSRF tokens
         http.csrf().disable();

@@ -1,12 +1,12 @@
-/*creates the grid structure. It requires a size, an element
-where the grid will be attached to and an id to recognized it.
+/*creates the grid structure. It requires a size, an element 
+where the grid will be attached to and an id to recognized it. 
 */
 const createGrid = function(size, element, id){
 
     let wrapper = document.createElement('DIV')//container of the grid
     wrapper.classList.add('grid-wrapper')
-
-    //the first loop creates the rows of the grid
+    
+    //the first loop creates the rows of the grid 
     for(let i = 0; i < size; i++){
         let row = document.createElement('DIV')
         row.classList.add('grid-row')
@@ -23,7 +23,7 @@ const createGrid = function(size, element, id){
                 cell.dataset.y = String.fromCharCode(i - 1 + 65)
                 cell.dataset.x = j
                 cell.addEventListener('drop', function(event) {dropShip(event)})
-                cell.addEventListener('dragover',function(event) {allowDrop(event)})
+                cell.addEventListener('dragover',function(event) {allowDrop(event)})      
             }
             //if j is equal to 0, the cells belongs to the first colummn, so the letter is added as text node
             if(j===0 && i > 0){
@@ -65,7 +65,7 @@ const createGrid = function(size, element, id){
       let y = cell.dataset.y.charCodeAt() - 64
       let x = parseInt(cell.dataset.x)
 
-      //Before the ship is dropped to a cell, checks if the length of the ship exceed the grid width,
+      //Before the ship is dropped to a cell, checks if the length of the ship exceed the grid width, 
       //If true, the drop event is aborted.
       if(ship.dataset.orientation == 'horizontal'){
         if(parseInt(ship.dataset.length) + x > 11){
@@ -96,14 +96,14 @@ const createGrid = function(size, element, id){
         }
       }
       //Else:
-      //the ship takes the position data of the targeted cell
+      //the ship takes the position data of the targeted cell 
       ship.dataset.y = String.fromCharCode(y + 64)
       ship.dataset.x = x
       //the ship is added to the cell
       ev.target.appendChild(ship);
 
       checkBusyCells(ship, ev.target)
-
+      
     }
 
 
@@ -123,8 +123,8 @@ function checkBusyCells(ship, cell){
         cell.classList.remove(`${ship.id}-busy-cell`)
         cell.classList.remove(`busy-cell`)
     })
-
-
+      
+      
 
     for(let i = 0; i < ship.dataset.length; i++){
         if(ship.dataset.orientation == 'horizontal'){

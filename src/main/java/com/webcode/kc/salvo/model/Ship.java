@@ -1,24 +1,21 @@
 package com.webcode.kc.salvo.model;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
 import javax.persistence.*;
-import java.util.ArrayList;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import org.hibernate.annotations.GenericGenerator;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 public class Ship {
 
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    private Long id;
+    private long id;
 
     private String type;
 
@@ -30,17 +27,13 @@ public class Ship {
     private GamePlayer gamePlayer;
 
 
-
-    //CONSTRUCTORES
-    public Ship() {
-    }
+    public Ship() { }
 
     public Ship(String type, List<String> locations) {
         this.type = type;
         this.locations = locations;
     }
 
-    //GETTERS Y SETTERS
     public long getId() {
         return this.id;
     }
@@ -61,16 +54,15 @@ public class Ship {
         this.locations = locations;
     }
 
-    public GamePlayer getGamePlayer() {
+    public GamePlayer getGamePlayer(){
         return this.gamePlayer;
     }
 
-    public void setGamePlayer(GamePlayer gamePlayer) {
+    public void setGamePlayer(GamePlayer gamePlayer){
         this.gamePlayer = gamePlayer;
     }
 
-
-    public Map<String, Object> shipDTO() {
+    public Map<String, Object> shipDTO(){
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("type", this.getType());
         dto.put("locations", this.getLocations());

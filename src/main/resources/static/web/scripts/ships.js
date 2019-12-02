@@ -1,4 +1,4 @@
-/*creates the ships with the ability of been placed in the grid.
+/*creates the ships with the ability of been placed in the grid. 
 It requires a shipType, that is, the id by wich the ship will be recongnized;
 the amount of cells the ship is going to occupy in the grid;
 a parent where the ship will be appended to;
@@ -20,29 +20,29 @@ const createShips = function(shipType, length, orientation, parent, isStatic){
     }
 
     if(window.innerWidth >= 768){
-        ship.style.width = `${length * 45}px`
+        ship.style.width = `${length * 45}px` 
         ship.style.height = '45px'
     }else if(window.innerWidth >= 576){
-        ship.style.width = `${length * 35}px`
+        ship.style.width = `${length * 35}px` 
         ship.style.height = '35px'
     }else{
-        ship.style.width = `${length * 30}px`
+        ship.style.width = `${length * 30}px` 
         ship.style.height = '30px'
     }
 
     window.addEventListener('resize', () => {
         if(window.innerWidth >= 768){
-            ship.style.width = `${length * 45}px`
+            ship.style.width = `${length * 45}px` 
             ship.style.height = '45px'
         }else if(window.innerWidth >= 576){
-            ship.style.width = `${length * 35}px`
+            ship.style.width = `${length * 35}px` 
             ship.style.height = '35px'
         }else{
-            ship.style.width = `${length * 30}px`
+            ship.style.width = `${length * 30}px` 
             ship.style.height = '30px'
         }
     })
-
+    
     if(!isStatic){
         grip.classList.add('grip')
         grip.draggable = 'true'
@@ -51,7 +51,7 @@ const createShips = function(shipType, length, orientation, parent, isStatic){
         ship.addEventListener('touchend', touchShipEnd)
         ship.appendChild(grip)
     }
-
+    
 
     content.classList.add('grid-item-content')
     ship.appendChild(content)
@@ -63,7 +63,7 @@ const createShips = function(shipType, length, orientation, parent, isStatic){
     }else{
         checkBusyCells(ship,parent)
     }
-
+    
 
 
     //event to allow the ship beeing dragged
@@ -76,7 +76,7 @@ const createShips = function(shipType, length, orientation, parent, isStatic){
     function touchShip(ev){
         // make the element draggable by giving it an absolute position and modifying the x and y coordinates
         ship.classList.add("absolute");
-
+        
         var touch = ev.targetTouches[0];
         // Place element where the finger is
         ship.style.left = touch.pageX - 25 + 'px';
@@ -94,7 +94,7 @@ const createShips = function(shipType, length, orientation, parent, isStatic){
             event.changedTouches[0].pageY
             );
 
-
+            
         // position it relative again and remove the inline styles that aren't needed anymore
         ship.classList.remove('absolute')
         ship.style.left = '';
@@ -158,7 +158,7 @@ const createShips = function(shipType, length, orientation, parent, isStatic){
                         document.querySelector("#display p").innerText = 'careful'
                         return
                     }
-
+                    
                     for(let i = 1; i < ship.dataset.length;i++){
                         let id = (cell.id).match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, 'g')).join('')
                         let cellId = `${id}${String.fromCharCode(cell.dataset.y.charCodeAt() + i)}${cell.dataset.x}`
@@ -188,7 +188,7 @@ const createShips = function(shipType, length, orientation, parent, isStatic){
             if(orientation == 'horizontal'){
                 ship.dataset.orientation = 'vertical'
                 ship.style.transform = 'rotate(90deg)'
-
+                
             } else{
                 ship.dataset.orientation = 'horizontal'
                 ship.style.transform = 'rotate(360deg)'
@@ -197,11 +197,11 @@ const createShips = function(shipType, length, orientation, parent, isStatic){
             if(cell != null){
                 checkBusyCells(ship,cell)
             }
-
+            
         })
     }
 
-
+    
 }
 
 

@@ -16,15 +16,14 @@ public class GamePlayer {
 
     private LocalDateTime joinDate;
 
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="player_id")
     private Player player;
 
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="game_id")
     private Game game;
-
 
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<Ship> ships = new HashSet<>();
@@ -32,24 +31,19 @@ public class GamePlayer {
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<Salvo> salvoes = new HashSet<>();
 
+    public GamePlayer() { }
 
-    //CONSTRUCTORES
-    public GamePlayer() {
-    }
-
-    public GamePlayer(Game game, Player player, LocalDateTime joinDate) {
+    public GamePlayer(Game game,Player player,LocalDateTime joinDate) {
         this.game = game;
         this.player = player;
         this.joinDate = joinDate;
     }
 
-    //GETTERS Y SETTERS
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -77,7 +71,6 @@ public class GamePlayer {
         this.game = game;
     }
 
-
     public void addShip(Ship ship){
         this.ships.add(ship);
         ship.setGamePlayer(this);
@@ -96,26 +89,24 @@ public class GamePlayer {
         return this.salvoes;
     }
 
+    public GamePlayer getOpponent(){
+        return this.getGame().getGamePlayers()
+                .stream().filter(gp -> gp.getId() != this.getId())
+                .findFirst()
+                .orElse(null);
+    }
 
-
-    public Map<String, Object> gamePlayerDTO() {
+    //DTO (data transfer object) para administrar la info de GamePlayer
+    public Map<String, Object> gamePlayerDTO(){
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
         dto.put("player", this.getPlayer().playerDTO());
 
-        Score score = this.getPlayer().getScoreByGame(this.getGame());
-        if (score != null)
+        Score score =this.getPlayer().getScoreByGame(this.getGame());
+        if(score != null)
             dto.put("score", score.getPoints());
         else
             dto.put("score", null);
-
-        return dto;
-    }
-
-
-    public Map<String, Object> gamePlayerUserNameDTO() {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("player", this.getPlayer().getUserName());
         return dto;
     }
 }
