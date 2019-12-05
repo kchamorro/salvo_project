@@ -5,7 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import org.hibernate.annotations.GenericGenerator;
+
 import java.time.LocalDateTime;
+import java.util.Date;
 
 
 @Entity
@@ -18,46 +20,25 @@ public class Score {
 
     private LocalDateTime finishDate;
 
-    private int points;
+    private Double score;
+
+
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="player_id")
+    @JoinColumn(name="player_ID")
     private Player player;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="game_id")
+    @JoinColumn(name="game_ID")
     private Game game;
 
-    public Score() { }
+    public Score(){}
 
-    public Score(int points, Game game,Player player,LocalDateTime finishDate) {
-        this.points = points;
+    public Score(Double score, Game game, Player player, LocalDateTime finishDate){
+        this.score = score;
         this.game = game;
         this.player = player;
-        this.finishDate = finishDate;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public int getPoints(){
-        return this.points;
-    }
-
-    public void setPoints(int points){
-        this.points = points;
-    }
-
-    public LocalDateTime getFinishDate() {
-        return finishDate;
-    }
-
-    public void setFinishDate(LocalDateTime finishDate) {
+//        player.addScore(this);
         this.finishDate = finishDate;
     }
 
@@ -76,4 +57,29 @@ public class Score {
     public void setGame(Game game) {
         this.game = game;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(LocalDateTime finishDate) {
+        this.finishDate = finishDate;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
 }

@@ -1,0 +1,94 @@
+body{
+    font-family: 'Play', sans-serif;
+}
+
+.noMargin{
+margin: 0;
+}
+
+.bodyContainer {
+    background: url("images/background.jpg");
+    height: 100vh;
+    overflow-y: scroll;
+    background-size: cover;
+    background-position: top;
+    display: flex;
+    flex-direction: column;
+}
+
+.backgroundColor{
+    width: 100%;
+    background-color: rgba(221, 233, 235, 0.74);
+}
+
+.mainHeadline{
+    text-align: center;
+    font-weight: 800;
+    font-size: 6rem;
+    margin: 2vh;
+}
+
+.headline{
+    font-weight: 700;
+}
+
+form input{
+    background-color: rgba(61, 61, 66, 0.247) !important;
+    padding-right: 5px;
+}
+
+input{
+    box-shadow: inset 2px 2px 8pxpx #000000;
+}
+
+.table{
+    margin-bottom: 0;
+}
+
+
+.tableContainer{
+    width:80%;
+    margin: auto;
+}
+
+.tableHead{
+    background-color: rgba(61, 61, 66, 0.178) !important;
+}
+
+.tbodyHeight{
+    max-height: 400px;
+    overflow:auto;
+}
+
+.cellWidthSm{
+    width: 16%;
+}
+
+.cellWidthMd{
+    width: 18%;
+}
+
+.cellWidth{
+    width: 28%;
+}
+
+th{
+    font-size: larger;
+}
+
+td{
+    font-weight: 600;
+}
+
+a{
+    color: #7e5e09;
+}
+
+@media (max-width: 991.98px) {
+    .mainHeadline{
+        text-align: center;
+        font-weight: 800;
+        font-size: 4rem;
+        margin: 2vh;
+    }
+ }

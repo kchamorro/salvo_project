@@ -50,7 +50,7 @@ public class SalvoApplication {
 			Player chloe = playerRepository.save(new Player("c.obrian@ctu.gov", "Chloe", "O'Brian", passwordEncoder.encode("42")));
 			Player kim = playerRepository.save(new Player("kim_bauer@gmail.com", "Kim", "Bauer", passwordEncoder.encode("kb")));
 			Player tony = playerRepository.save(new Player("t.almeida@ctu.gov", "Tony", "Almeida", passwordEncoder.encode("mole")));
-			Player admin = playerRepository.save(new Player("admin@gmail.com", "Admin", "salvo", passwordEncoder.encode("admin"), true));
+			Player admin = playerRepository.save(new Player("admin@gmail.com", "Admin", "salvo", passwordEncoder.encode("admin")));
 
 			// save a Games
 			Game game1 = gameRepository.save(new Game(LocalDateTime.now()));
@@ -172,14 +172,14 @@ public class SalvoApplication {
 
 
 			//save a ScoreRepository
-			scoreRepository.save(new Score(3, game1, jack, LocalDateTime.from(game1.getCreationDate().plusMinutes(30))));
-			scoreRepository.save(new Score(0, game1, chloe, LocalDateTime.from(game1.getCreationDate().plusMinutes(30))));
-			scoreRepository.save(new Score(1, game2, jack, LocalDateTime.from(game2.getCreationDate().plusMinutes(30))));
-			scoreRepository.save(new Score(1, game2, chloe, LocalDateTime.from(game2.getCreationDate().plusMinutes(30))));
-			scoreRepository.save(new Score(3, game3, chloe, LocalDateTime.from(game3.getCreationDate().plusMinutes(30))));
-			scoreRepository.save(new Score(0, game3, tony, LocalDateTime.from(game3.getCreationDate().plusMinutes(30))));
-			scoreRepository.save(new Score(1, game4, jack, LocalDateTime.from(game4.getCreationDate().plusMinutes(30))));
-			scoreRepository.save(new Score(1, game4, tony, LocalDateTime.from(game4.getCreationDate().plusMinutes(30))));
+			scoreRepository.save(new Score(1.0, game1, jack, LocalDateTime.from(game1.getCreationDate().plusMinutes(30))));
+			scoreRepository.save(new Score(0.5, game1, chloe, LocalDateTime.from(game1.getCreationDate().plusMinutes(30))));
+			scoreRepository.save(new Score(0.5, game2, jack, LocalDateTime.from(game2.getCreationDate().plusMinutes(30))));
+			scoreRepository.save(new Score(0.5, game2, chloe, LocalDateTime.from(game2.getCreationDate().plusMinutes(30))));
+			scoreRepository.save(new Score(1.0, game3, chloe, LocalDateTime.from(game3.getCreationDate().plusMinutes(30))));
+			scoreRepository.save(new Score(0.5, game3, tony, LocalDateTime.from(game3.getCreationDate().plusMinutes(30))));
+			scoreRepository.save(new Score(0.5, game4, jack, LocalDateTime.from(game4.getCreationDate().plusMinutes(30))));
+			scoreRepository.save(new Score(0.5, game4, tony, LocalDateTime.from(game4.getCreationDate().plusMinutes(30))));
 
 
 		};

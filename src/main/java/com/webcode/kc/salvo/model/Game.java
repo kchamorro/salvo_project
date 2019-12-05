@@ -14,25 +14,22 @@ import java.util.stream.Collectors;
 
 @Entity
 public class Game {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
-
+    //propiedades de la clase Game
     private LocalDateTime creationDate;
 
-
+    //relación Many to Many con Player a través de la instancia intermedia GamePlayer
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<Score> scores = new HashSet<>();
 
-
-    //CONSTRUCTORES
+    /*Constructores*/
 
     //constructor vacío
     public Game() {}
@@ -42,7 +39,8 @@ public class Game {
     }
 
 
-    //GETTERS Y SETTERS
+
+    //getters & setters
     public long getId() {
         return id;
     }
@@ -63,7 +61,7 @@ public class Game {
         return gamePlayers;
     }
 
-    // Establecer relación entre game y gamePlayer
+
     public void addGamePlayer(GamePlayer gamePlayer) {
         this.gamePlayers.add(gamePlayer);
         gamePlayer.setGame(this);
@@ -78,18 +76,6 @@ public class Game {
         score.setGame(this);
     }
 
-    //Retormar los players
-    public List<Player> getPlayers() {
-        return this.gamePlayers.stream().map(gp -> gp.getPlayer()).collect(Collectors.toList());
-    }
 
-    //DTO (data transfer object) para administrar la info de Game
-    public Map<String, Object> gameDTO() {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", this.getId());
-        dto.put("created", this.getCreationDate());
-        dto.put("gamePlayers", this.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO).collect(Collectors.toList()));
-        return dto;
-    }
 
 }

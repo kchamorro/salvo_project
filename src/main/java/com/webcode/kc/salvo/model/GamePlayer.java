@@ -13,25 +13,32 @@ public class GamePlayer {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
-
     private LocalDateTime joinDate;
 
-
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="player_id")
+    @JoinColumn(name="gameplayer_id")
     private Player player;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="game_id")
     private Game game;
 
-    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
-    private Set<Ship> ships = new HashSet<>();
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
+    Set<Ship> ships = new HashSet<>();
 
-    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
-    private Set<Salvo> salvoes = new HashSet<>();
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
+    Set<Salvo> salvos = new HashSet<>();
 
-    public GamePlayer() { }
+    public Set<Ship> getShip() {
+        return ships;
+    }
+
+    public void setShip(Set<Ship> ship) {
+        this.ships = ship;
+    }
+
+    public GamePlayer() {
+    }
 
     public GamePlayer(Game game,Player player,LocalDateTime joinDate) {
         this.game = game;
@@ -43,28 +50,37 @@ public class GamePlayer {
         return id;
     }
 
+    public LocalDateTime getJoinDate() {
+        return joinDate;
+    }
+
+    public Player getPlayer(){
+        return player;
+    }
+
+    public Set<Ship> getShips() {
+        return ships;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
 
-    public LocalDateTime getJoinDate() {
-        return joinDate;
+    public void setShips(Set<Ship> ships) {
+        this.ships = ships;
     }
+
+
+    public Game getGame(){
+        return game;
+    };
 
     public void setJoinDate(LocalDateTime joinDate) {
         this.joinDate = joinDate;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
     public void setPlayer(Player player) {
         this.player = player;
-    }
-
-    public Game getGame() {
-        return game;
     }
 
     public void setGame(Game game) {
@@ -72,41 +88,32 @@ public class GamePlayer {
     }
 
     public void addShip(Ship ship){
-        this.ships.add(ship);
         ship.setGamePlayer(this);
+        this.ships.add(ship);
     }
 
-    public Set<Ship> getShips(){
-        return this.ships;
+    public Set<Salvo> getSalvos() {
+        return salvos;
+    }
+
+    public void setSalvos(Set<Salvo> salvos) {
+        this.salvos = salvos;
     }
 
     public void addSalvo(Salvo salvo){
-        this.salvoes.add(salvo);
         salvo.setGamePlayer(this);
+        this.salvos.add(salvo);
     }
 
-    public Set<Salvo> getSalvoes(){
-        return this.salvoes;
+    public Integer getLastTurn(){
+        if(!this.getSalvos().isEmpty()){
+            return this.getSalvos().stream()
+                    .map(salvo1 ->salvo1.getTurn() )
+                    .max((x,y)->Integer.compare(x,y))
+                    .get();
+        }else {
+            return 0;
+        }
     }
 
-    public GamePlayer getOpponent(){
-        return this.getGame().getGamePlayers()
-                .stream().filter(gp -> gp.getId() != this.getId())
-                .findFirst()
-                .orElse(null);
-    }
-
-    //DTO (data transfer object) para administrar la info de GamePlayer
-    public Map<String, Object> gamePlayerDTO(){
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", this.getId());
-        dto.put("player", this.getPlayer().playerDTO());
-
-        Score score =this.getPlayer().getScoreByGame(this.getGame());
-        if(score != null)
-            dto.put("score", score.getPoints());
-        else
-            dto.put("score", null);
-        return dto;
-    }
 }
