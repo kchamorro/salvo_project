@@ -36,7 +36,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutUrl("/api/logout");
 
         // turn off checking for CSRF tokens
-        //http.csrf().disable();
+       http.csrf().disable();
 
         // if user is not authenticated, just send an authentication failure response
         http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
