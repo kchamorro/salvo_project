@@ -19,14 +19,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/web/games.html").permitAll()
-                .antMatchers("/web/scripts/**").permitAll()
-                .antMatchers("/web/styles/**").permitAll()
-                .antMatchers("/web/img/**").permitAll()
-                .antMatchers("/api/games").permitAll()
-                .antMatchers("/api/players").permitAll()
-                .antMatchers("/rest/*").denyAll()
+                .antMatchers("/rest/**").hasAnyAuthority("USER")
+                .antMatchers("/web/index.html").hasAuthority("USER")
                 .anyRequest().authenticated()
                 .and().csrf().disable().formLogin()
                 .loginPage("/api/login").permitAll()
@@ -35,8 +29,11 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout().logoutUrl("/api/logout");
 
+
+
+
         // turn off checking for CSRF tokens
-       http.csrf().disable();
+      // http.csrf().disable();
 
         // if user is not authenticated, just send an authentication failure response
         http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));

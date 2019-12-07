@@ -9,10 +9,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Configuration
@@ -21,28 +20,23 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
     @Autowired
     PlayerRepository playerRepository;
 
-    @Override
-    public void init(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService());
-    }
 
     @Bean
-    UserDetailsService userDetailsService() {
-        return new UserDetailsService() {
+    public PasswordEncoder passwordEncoder() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder;
+    }
 
-            @Override
-            public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-
-                //Busqueda del nombre en el repositorio
-                Player player = playerRepository.findByUserName(name);
-
-                if (player != null) {
-                    System.out.println("Player login: " + player);
-                    return new User(player.getUserName(), player.getPassword(), AuthorityUtils.createAuthorityList("USER"));
-                } else {
-                    throw new UsernameNotFoundException("Unknown user: " + name);
-                }
+    @Override
+    public void init(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(inputName-> {
+            Player player = playerRepository.findPlayerByUserName(inputName);
+            if (player != null) {
+                    return new User(player.getUserName(), player.getPassword(),
+                            AuthorityUtils.createAuthorityList("USER"));
+            } else {
+                throw new UsernameNotFoundException("Unknown user: " + inputName);
             }
-        };
+        }).passwordEncoder(passwordEncoder());
     }
 }
