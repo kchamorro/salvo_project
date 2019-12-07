@@ -19,8 +19,16 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/rest/**").hasAnyAuthority("USER")
-                .antMatchers("/web/index.html").hasAuthority("USER")
+                .antMatchers("/").permitAll()
+                .antMatchers("/web/index.html").permitAll()
+                .antMatchers("/web/index1.html").permitAll()
+                .antMatchers("/web/scripts/**").permitAll()
+                .antMatchers("/web/styles/**").permitAll()
+                .antMatchers("/web/img/**").permitAll()
+                .antMatchers("/api/games").permitAll()
+                .antMatchers("/api/players").permitAll()
+                .antMatchers("/favicon.ico").permitAll()
+                .antMatchers("/rest/*").denyAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable().formLogin()
                 .loginPage("/api/login").permitAll()
