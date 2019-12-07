@@ -4,33 +4,35 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import org.hibernate.annotations.GenericGenerator;
-import java.util.LinkedHashMap;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Entity
 public class Salvo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="gamePlayer_id")
+    @JoinColumn(name = "gamePlayer_id")
     private GamePlayer gamePlayer;
+    private long turn;
 
     @ElementCollection
-    private List<String> salvoLocations;
+    @Column(name = "location")
+    private List<String> locations = new ArrayList<>();
 
-    private Integer turn;
+    public Salvo() {
+    }
 
-    public Salvo (){}
+    public Salvo(int turn, List<String> locations) {
+        this.turn = turn;
+        this.locations = locations;
+    }
 
-    public Salvo (Integer turn, List<String> salvoLocations) {
-        this.turn= turn;
-        this.salvoLocations= salvoLocations;
+    public Salvo(long turn) {
+        this.turn = turn;
     }
 
     public long getId() {
@@ -49,19 +51,29 @@ public class Salvo {
         this.gamePlayer = gamePlayer;
     }
 
-    public List<String> getSalvoLocations() {
-        return salvoLocations;
-    }
-
-    public void setSalvoLocations(List<String> salvoLocations) {
-        this.salvoLocations = salvoLocations;
-    }
-
-    public Integer getTurn() {
+    public long getTurn() {
         return turn;
     }
 
-    public void setTurn(Integer turn) {
+    public void setTurn(long turn) {
         this.turn = turn;
+    }
+
+    public List<String> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<String> locations) {
+        this.locations = locations;
+    }
+
+    @Override
+    public String toString() {
+        return "Salvo{" +
+                "id=" + id +
+                ", gamePlayer=" + gamePlayer +
+                ", turn=" + turn +
+                ", locations=" + locations +
+                '}';
     }
 }

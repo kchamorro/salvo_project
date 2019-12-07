@@ -5,42 +5,32 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
 import java.util.*;
-import javax.persistence.CascadeType;
 import java.util.stream.Collectors;
 
 
 @Entity
 public class Game {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    //propiedades de la clase Game
     private LocalDateTime creationDate;
 
-    //relación Many to Many con Player a través de la instancia intermedia GamePlayer
-    @OneToMany(mappedBy="game", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
-    private Set<GamePlayer> gamePlayers = new HashSet<>();
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
+    Set<GamePlayer> gamePlayers = new HashSet<>();
 
-    @OneToMany(mappedBy="game", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
-    private Set<Score> scores = new HashSet<>();
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
+    Set<Score> scores = new HashSet<>();
 
-    /*Constructores*/
-
-    //constructor vacío
-    public Game() {}
+    public Game() { }
 
     public Game(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-
-
-    //getters & setters
     public long getId() {
         return id;
     }
@@ -61,21 +51,26 @@ public class Game {
         return gamePlayers;
     }
 
-
     public void addGamePlayer(GamePlayer gamePlayer) {
-        this.gamePlayers.add(gamePlayer);
         gamePlayer.setGame(this);
+        gamePlayers.add(gamePlayer);
     }
 
-    public Set<Score> getScores(){
-        return this.scores;
+    public List<Player> getPlayers() {
+        return gamePlayers.stream().map(player -> player.getPlayer()).collect(Collectors.toList());
     }
 
-    public void addScore(Score score){
-        this.scores.add(score);
+    public void addScores(Score score) {
         score.setGame(this);
+        scores.add(score);
     }
 
 
-
+    @Override
+    public String toString() {
+        return "Game{" +
+                "id=" + id +
+                ", creationDate=" + creationDate +
+                '}';
+    }
 }

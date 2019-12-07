@@ -9,38 +9,40 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+
 
 @Configuration
-public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
     @Autowired
     PlayerRepository playerRepository;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(inputName-> {
-            Player player = playerRepository.findPlayerByUserName(inputName);
-            if (player != null) {
+        auth.userDetailsService(userDetailsService());
+    }
 
-                if(player.isAdmin()){
-                    return new User(player.getUserName(), player.getPassword(),
-                            AuthorityUtils.createAuthorityList("ADMIN"));
+    @Bean
+    UserDetailsService userDetailsService() {
+        return new UserDetailsService() {
+
+            @Override
+            public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+
+                //Busqueda del nombre en el repositorio
+                Player player = playerRepository.findByUserName(name);
+
+                if (player != null) {
+                    System.out.println("Player login: " + player);
+                    return new User(player.getUserName(), player.getPassword(), AuthorityUtils.createAuthorityList("USER"));
                 } else {
-                    return new User(player.getUserName(), player.getPassword(),
-                            AuthorityUtils.createAuthorityList("USER"));
+                    throw new UsernameNotFoundException("Unknown user: " + name);
                 }
-
-            } else {
-                throw new UsernameNotFoundException("Unknown user: " + inputName);
             }
-        }).passwordEncoder(passwordEncoder());
+        };
     }
 }

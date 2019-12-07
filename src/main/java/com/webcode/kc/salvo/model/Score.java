@@ -4,41 +4,64 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import org.hibernate.annotations.GenericGenerator;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
 @Entity
 public class Score {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    private long id;
-
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private double score;
+    @Column(name="finish_date")
     private LocalDateTime finishDate;
 
-    private Double score;
-
-
-
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="player_ID")
+    @JoinColumn(name = "player_id")
     private Player player;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="game_ID")
+    @JoinColumn(name = "game_id")
     private Game game;
 
-    public Score(){}
+    public Score() {
+    }
 
-    public Score(Double score, Game game, Player player, LocalDateTime finishDate){
+    public Score(double score, Player player, Game game) {
+        this.score = score;
+        this.player = player;
+        this.game = game;
+    }
+
+    public Score(double score, Game game,Player player,LocalDateTime finishDate) {
         this.score = score;
         this.game = game;
         this.player = player;
-//        player.addScore(this);
+        this.finishDate = finishDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public LocalDateTime getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(LocalDateTime finishDate) {
         this.finishDate = finishDate;
     }
 
@@ -58,28 +81,15 @@ public class Score {
         this.game = game;
     }
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
+    @Override
+    public String toString() {
+        return "Score{" +
+                "id=" + id +
+                ", score=" + score +
+                ", finishDate=" + finishDate +
+                ", player=" + player +
+                ", game=" + game +
+                '}';
     }
-
-    public LocalDateTime getFinishDate() {
-        return finishDate;
-    }
-
-    public void setFinishDate(LocalDateTime finishDate) {
-        this.finishDate = finishDate;
-    }
-
-    public Double getScore() {
-        return score;
-    }
-
-    public void setScore(Double score) {
-        this.score = score;
-    }
-
 }

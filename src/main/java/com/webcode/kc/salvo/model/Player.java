@@ -1,11 +1,7 @@
 package com.webcode.kc.salvo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,103 +13,102 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    private String name;
+
+    @Column(name = "user_name")
     private String userName;
-    private String firstName;
-    private String lastName;
+
+    @JsonIgnore
     private String password;
 
-    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
-    Set<GamePlayer> gamePlayers;
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
+    Set<GamePlayer> gamePlayers = new HashSet<>();
 
-    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
-    Set<Score> scores;
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
+    Set<Score> scores = new HashSet<>();
 
-    public Player() { }
-
-    public Set<Score> getScores() {
-        return scores;
+    public Player() {
     }
 
-    public void setScores(Set<Score> scores) {
-        this.scores = scores;
+    public Player(String userName) {
+        this.userName = userName;
     }
 
-    public void addScore(Score score){
-        score.setPlayer(this);
-        this.scores.add(score);
+    public Player(String name, String userName, String password) {
+        this.name = name;
+        this.userName = userName;
+        this.password = password;
     }
-
 
     public Player(String userName, String password) {
         this.userName = userName;
         this.password = password;
     }
 
-    public Player(String userName, String firstName, String lastName, String password) {
-        this.userName = userName;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-    }
-
-
     public long getId() {
         return id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getFirstName(){
-        return this.firstName;
-    }
-
-    public void setFirstName(String firstName){
-        this.firstName = firstName;
-    }
-
-    public String getLastName(){
-        return this.lastName;
-    }
-
-    public void setLastName(String lastName){
-        this.lastName = lastName;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    @JsonIgnore
-    public Set<GamePlayer> getGamePlayers() {
-        return gamePlayers;
-    }
-
-    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
-        this.gamePlayers = gamePlayers;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public Score getScore(Game game){
-        return scores.stream().filter( score -> score.getGame().equals(game)).findFirst().orElse(null);
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void addGamePlayer(GamePlayer gamePlayer) {
+        gamePlayer.setPlayer(this);
+        gamePlayers.add(gamePlayer);
+    }
+
+    @JsonIgnore
+    public List<Game> getGames() {
+        return gamePlayers.stream().map(game -> game.getGame()).collect(Collectors.toList());
+    }
+
+    public void addScores(Score score) {
+        score.setPlayer(this);
+        scores.add(score);
+    }
+
+    //Metodo para obtener la puntuacion del Jugador en el Juego
+    public Score getScore(Game game) {
+
+        return scores.stream().filter(p -> p.getGame().getId() == game.getId()).findFirst().orElse(null);
+    }
+
+    public Set<Score> getScores() {
+        return scores;
     }
 
     @Override
     public String toString() {
         return "Player{" +
-                "userName=" + userName +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", userName='" + userName + '\'' +
                 '}';
     }
 }
