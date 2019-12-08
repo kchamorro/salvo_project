@@ -1,40 +1,37 @@
 package com.webcode.kc.salvo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 public class GamePlayer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
     private LocalDateTime joinDate;
 
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "player_id")
+    @JoinColumn(name="player_id")
     private Player player;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "game_id")
+    @JoinColumn(name="game_id")
     private Game game;
 
-    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
-    Set<Ship> ships = new HashSet<>();
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
+    private Set<Ship> ships = new HashSet<>();
 
-    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
-    Set<Salvo> salvoes = new HashSet<>();
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
+    private Set<Salvo> salvoes = new HashSet<>();
 
     public GamePlayer() { }
-
-    public GamePlayer(Player player, Game game) {
-        this.player = player;
-        this.game = game;
-    }
 
     public GamePlayer(Game game,Player player,LocalDateTime joinDate) {
         this.game = game;
@@ -74,10 +71,13 @@ public class GamePlayer {
         this.game = game;
     }
 
-
     public void addShip(Ship ship){
         this.ships.add(ship);
         ship.setGamePlayer(this);
+    }
+
+    public Set<Ship> getShips(){
+        return this.ships;
     }
 
     public void addSalvo(Salvo salvo){
@@ -85,23 +85,8 @@ public class GamePlayer {
         salvo.setGamePlayer(this);
     }
 
-    @JsonIgnore
-    public List<Ship> getShips() {
-        return ships.stream().collect(Collectors.toList());
-    }
-
-    public void addSalvoes(Salvo salvo) {
-        salvo.setGamePlayer(this);
-        salvoes.add(salvo);
-    }
-
-    @JsonIgnore
-    public List<Salvo> getSalvoes() {
-        return salvoes.stream().collect(Collectors.toList());
-    }
-
-    public Score getScore() {
-        return player.getScore(game);
+    public Set<Salvo> getSalvoes(){
+        return this.salvoes;
     }
 
     public GamePlayer getOpponent(){
@@ -111,5 +96,17 @@ public class GamePlayer {
                 .orElse(null);
     }
 
+    //DTO (data transfer object) para administrar la info de GamePlayer
+    public Map<String, Object> gamePlayerDTO(){
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id", this.getId());
+        dto.put("player", this.getPlayer().playerDTO());
 
+        Score score =this.getPlayer().getScoreByGame(this.getGame());
+        if(score != null)
+            dto.put("score", score.getPoints());
+        else
+            dto.put("score", null);
+        return dto;
+    }
 }

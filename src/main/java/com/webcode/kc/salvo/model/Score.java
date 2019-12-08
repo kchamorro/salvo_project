@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
 
 
@@ -11,50 +12,45 @@ import java.time.LocalDateTime;
 public class Score {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private double score;
-    @Column(name="finish_date")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    private long id;
+
     private LocalDateTime finishDate;
 
+    private int points;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "player_id")
+    @JoinColumn(name="player_id")
     private Player player;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "game_id")
+    @JoinColumn(name="game_id")
     private Game game;
 
-    public Score() {
-    }
+    public Score() { }
 
-    public Score(double score, Player player, Game game) {
-        this.score = score;
-        this.player = player;
-        this.game = game;
-    }
-
-    public Score(double score, Game game,Player player,LocalDateTime finishDate) {
-        this.score = score;
+    public Score(int points, Game game,Player player,LocalDateTime finishDate) {
+        this.points = points;
         this.game = game;
         this.player = player;
         this.finishDate = finishDate;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public double getScore() {
-        return score;
+    public int getPoints(){
+        return this.points;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setPoints(int points){
+        this.points = points;
     }
 
     public LocalDateTime getFinishDate() {
@@ -79,17 +75,5 @@ public class Score {
 
     public void setGame(Game game) {
         this.game = game;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Score{" +
-                "id=" + id +
-                ", score=" + score +
-                ", finishDate=" + finishDate +
-                ", player=" + player +
-                ", game=" + game +
-                '}';
     }
 }

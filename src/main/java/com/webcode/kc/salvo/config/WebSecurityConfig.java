@@ -1,47 +1,35 @@
 package com.webcode.kc.salvo.config;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @EnableWebSecurity
-@Configuration
-class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    //Reglas de autentificacion en el protocolo HTTP
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http.authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/web/index.html").permitAll()
-                .antMatchers("/web/index1.html").permitAll()
-                .antMatchers("/web/scripts/**").permitAll()
-                .antMatchers("/web/styles/**").permitAll()
-                .antMatchers("/web/img/**").permitAll()
+                .antMatchers("/rest/**").hasAuthority("ADMIN")
+                .antMatchers("/api/game_view/**").hasAnyAuthority("ADMIN","USER")
                 .antMatchers("/api/games").permitAll()
-                .antMatchers("/api/players").permitAll()
-                .antMatchers("/favicon.ico").permitAll()
-                .antMatchers("/rest/*").denyAll()
-                .anyRequest().authenticated()
-                .and().csrf().disable().formLogin()
-                .loginPage("/api/login").permitAll()
+                .antMatchers("/api/leaderboard").permitAll();
+        //.antMatchers("/web/games.html").hasAnyAuthority("ADMIN","USER");
+
+        http.formLogin()
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .and()
-                .logout().logoutUrl("/api/logout");
+                .loginPage("/api/login");
 
-
-
+        http.logout().logoutUrl("/api/logout");
 
         // turn off checking for CSRF tokens
-      // http.csrf().disable();
+        http.csrf().disable();
 
         // if user is not authenticated, just send an authentication failure response
         http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));

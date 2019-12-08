@@ -13,18 +13,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
 @Configuration
-class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
     @Autowired
     PlayerRepository playerRepository;
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
+        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -32,8 +29,15 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
         auth.userDetailsService(inputName-> {
             Player player = playerRepository.findPlayerByUserName(inputName);
             if (player != null) {
+
+                if(player.isAdmin()){
+                    return new User(player.getUserName(), player.getPassword(),
+                            AuthorityUtils.createAuthorityList("ADMIN"));
+                } else {
                     return new User(player.getUserName(), player.getPassword(),
                             AuthorityUtils.createAuthorityList("USER"));
+                }
+
             } else {
                 throw new UsernameNotFoundException("Unknown user: " + inputName);
             }

@@ -4,94 +4,67 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import org.hibernate.annotations.GenericGenerator;
+import java.util.LinkedHashMap;
 import java.util.*;
 
 @Entity
 public class Ship {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private long id;
-    private String shipType;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "gamePlayer_id")
-    private GamePlayer gamePlayer;
+    private String type;
 
     @ElementCollection
-    @Column(name = "location")
     private List<String> locations = new ArrayList<>();
 
-    public Ship() {
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="gamePlayer_id")
+    private GamePlayer gamePlayer;
 
-    public Ship(String shipType) {
-        this.shipType = shipType;
-    }
 
-    public Ship(String shipType, List<String> locations) {
-        this.shipType = shipType;
+    public Ship() { }
+
+    public Ship(String type, List<String> locations) {
+        this.type = type;
         this.locations = locations;
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public String getType() {
+        return this.type;
     }
 
-    public String getShipType() {
-        return shipType;
-    }
-
-    public void setShipType(String shipType) {
-        this.shipType = shipType;
-    }
-
-    public GamePlayer getGamePlayer() {
-        return gamePlayer;
-    }
-
-    public void setGamePlayer(GamePlayer gamePlayer) {
-        this.gamePlayer = gamePlayer;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public List<String> getLocations() {
-        return locations;
+        return this.locations;
     }
 
     public void setLocations(List<String> locations) {
         this.locations = locations;
     }
 
-    public Integer getLongTypeShip() {
-
-        switch (this.shipType) {
-            case "Carrier":
-                return 5;
-            case "Battleship":
-                return 4;
-            case "Submarine":
-                return 3;
-            case "Destroyer":
-                return 3;
-            case "Patrol Boat":
-                return 2;
-            default:
-                break;
-        }
-        return 0;
+    public GamePlayer getGamePlayer(){
+        return this.gamePlayer;
     }
 
-    @Override
-    public String toString() {
-        return "Ship{" +
-                "id=" + id +
-                ", shipType='" + shipType + '\'' +
-                ", gamePlayer=" + gamePlayer +
-                ", locations=" + locations +
-                '}';
+    public void setGamePlayer(GamePlayer gamePlayer){
+        this.gamePlayer = gamePlayer;
+    }
+
+    public Map<String, Object> shipDTO(){
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("type", this.getType());
+        dto.put("locations", this.getLocations());
+        return dto;
     }
 }

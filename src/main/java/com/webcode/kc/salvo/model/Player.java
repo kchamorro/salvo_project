@@ -1,7 +1,11 @@
 package com.webcode.kc.salvo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,47 +15,80 @@ import java.util.stream.Collectors;
 public class Player {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
-    private String name;
+    private String firstName;
+    private String lastName;
 
-    @Column(name = "user_name")
+    @NotNull
+    @NotEmpty
+    @Column(unique = true)
     private String userName;
 
-    @JsonIgnore
     private String password;
+    private boolean admin;
 
-    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
-    Set<GamePlayer> gamePlayers = new HashSet<>();
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<GamePlayer> gamePlayers = new HashSet<>();
 
-    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
-    Set<Score> scores = new HashSet<>();
 
-    public Player() {
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Score> scores = new HashSet<>();
+
+
+
+    //CONSTRUCTORES
+
+    public Player() { }
+
+    public Player(String userName, String firstName, String lastName) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
-    public Player(String userName) {
+    public Player(String userName, String firstName, String lastName, String password) {
         this.userName = userName;
-    }
-
-    public Player(String name, String userName, String password) {
-        this.name = name;
-        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.password = password;
+        this.admin = false;
     }
 
-    public Player(String userName, String password) {
+    public Player(String userName, String firstName, String lastName,String password, boolean isAdmin) {
         this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.password = password;
+        this.admin = isAdmin;
     }
 
-    public long getId() {
+    //GET Y SET
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getUserName() {
@@ -70,45 +107,79 @@ public class Player {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public boolean isAdmin(){
+        return this.admin;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAdmin(boolean isAdmin){
+        this.admin = isAdmin;
     }
 
-    public void addGamePlayer(GamePlayer gamePlayer) {
-        gamePlayer.setPlayer(this);
-        gamePlayers.add(gamePlayer);
-    }
-
-    @JsonIgnore
-    public List<Game> getGames() {
-        return gamePlayers.stream().map(game -> game.getGame()).collect(Collectors.toList());
-    }
-
-    public void addScores(Score score) {
-        score.setPlayer(this);
-        scores.add(score);
-    }
-
-    //Metodo para obtener la puntuacion del Jugador en el Juego
-    public Score getScore(Game game) {
-
-        return scores.stream().filter(p -> p.getGame().getId() == game.getId()).findFirst().orElse(null);
+    public Set<GamePlayer> getGamePlayers() {
+        return this.gamePlayers;
     }
 
     public Set<Score> getScores() {
-        return scores;
+        return this.scores;
     }
 
-    @Override
-    public String toString() {
-        return "Player{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", userName='" + userName + '\'' +
-                '}';
+    public void addScore(Score score) {
+        this.scores.add(score);
+        score.setPlayer(this);
+    }
+
+    public Score getScoreByGame(Game game) {
+        return this.scores.stream()
+                .filter(score -> score.getGame().getId() == game.getId())
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Set<Score> getLossesScores() {
+        return this.scores.stream()
+                .filter(lossScore -> lossScore.getPoints() == 0)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<Score> getTiesScores() {
+        return this.scores.stream()
+                .filter(tieScore -> tieScore.getPoints() == 1)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<Score> getWonScores() {
+        return this.scores.stream()
+                .filter(wonScore -> wonScore.getPoints() == 3)
+                .collect(Collectors.toSet());
+    }
+
+    public int getTotalPoints() {
+        return this.getWonScores().size() * 3 + getTiesScores().size();
+    }
+
+    public void addGamePlayer(GamePlayer gamePlayer) {
+        this.gamePlayers.add(gamePlayer);
+        gamePlayer.setPlayer(this);
+    }
+
+
+    @JsonIgnore
+    public List<Game> getGames() {
+        return this.gamePlayers.stream().map(gp -> gp.getGame()).collect(Collectors.toList());
+    }
+
+    //DTO (data transfer object) para administrar la info de Player
+    public Map<String, Object> playerDTO() {
+        Integer cantWon = this.getWonScores().size();
+        Integer cantLose = this.getLossesScores().size();
+        Integer cantTie = this.getTiesScores().size();
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id", this.getId());
+        dto.put("username", this.getUserName());
+        dto.put("won", cantWon);
+        dto.put("lose", cantLose);
+        dto.put("tie", cantTie);
+        dto.put("total", this.getTotalPoints());
+        return dto;
     }
 }
