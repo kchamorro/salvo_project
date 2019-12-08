@@ -1,7 +1,7 @@
 
 function getGames(){
 
-	
+
 	fetch("/api/games")
 		.then(res => res.json())
 		.then(json => {
@@ -18,24 +18,22 @@ var app = new Vue({
     el: "#app",
     data: {
         games: [],
-        players: [],
-                username: "",
-                password: "",
+        player: {}
     },
     methods: {
     	changeDateFormat (dateString){
 		    return new Date(dateString).toLocaleString();
 		},
 		login(evt) {
-		   evt.preventDefault(); 
+		   evt.preventDefault();
 
 		   let formData = new FormData(evt.target)
-		   
+
 
 		   fetch('/api/login',{
 				method: 'POST',
 				body: formData,
-		  		
+
 			})
 			.then((res)=> res)
 			.then(json =>{
@@ -60,7 +58,7 @@ var app = new Vue({
 				}
 			})
 			.then(json => {
-	
+
 				location.href = '/web/game.html?gp=' + json.gpId
 			})
 			.catch(error => error)
@@ -83,48 +81,6 @@ var app = new Vue({
 			})
 			.catch(error => error)
 			.then(error => console.log(error))
-		},
-		register() {
-                    if (this.username.trim() == "" || this.password.trim() == "") {
-                        alert("username or password empty");
-                        app.emptyTextInputs();
-                        return;
-                    }
-
-                    fetch("/api/players", {
-                            credentials: 'include',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            },
-                            method: 'POST',
-                            body: 'username=' + this.username + '&password=' + this.password,
-                        })
-                        .then(function (res) {
-                            return res.json();
-                        }).then(function (data) {
-                            console.log('Request success: ', data);
-                            if (data.username) {
-                                alert("Welcome " + app.username);
-                                app.loginForm = false;
-                                app.logoutForm = true;
-                                app.usernameDisplay = true;
-                                app.logIn();
-                            } else {
-                                alert("Wrong username or password, try again");
-                            }
-                        })
-                        .catch(function (error) {
-                            console.log('Request failure: ', error);
-                        });
-        }
+		}
     }
 });
-
-
-
-
-
-
-
-
-
