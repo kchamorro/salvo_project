@@ -10,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.*;
@@ -25,6 +26,7 @@ import java.util.Date;
  */
 
 @SpringBootApplication
+@ComponentScan(basePackages={"com.webcode.kc.salvo"})
 public class SalvoApplication {
 
 	public static void main(String[] args) {
