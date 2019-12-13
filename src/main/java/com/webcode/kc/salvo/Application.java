@@ -27,10 +27,10 @@ import java.util.Date;
 
 @SpringBootApplication
 @ComponentScan(basePackages={"com.webcode.kc.salvo"})
-public class SalvoApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SalvoApplication.class, args);
+		SpringApplication.run( Application.class, args);
 	}
 
 	@Autowired
